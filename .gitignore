@@ -7,7 +7,8 @@ __pycache__/
 *.wav
 *.mp4
 .DS_Store
-# in progress (Redbank III MV) — committed once finished
-v7-redbank/
 # Apple system font subsets (PingFang SC, Songti SC) — not redistributable
 *-sub.otf
+!NotoSansSC-*-sub.otf
+# Redbank III v08 enclosure mesh (hardware design) — not published here yet
+v7-redbank/data/pyramid.json
