@@ -1,0 +1,13 @@
+node_modules/
+out/
+**/out/
+.seg/
+__pycache__/
+*.pyc
+*.wav
+*.mp4
+.DS_Store
+# in progress (Redbank III MV) — committed once finished
+v7-redbank/
+# Apple system font subsets (PingFang SC, Songti SC) — not redistributable
+*-sub.otf

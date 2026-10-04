@@ -1,0 +1,13 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Octos — promo</title>
+<style>
+  html,body{margin:0;background:#000;height:100%;overflow:hidden;color:#aaa;font:12px monospace}
+  canvas{position:absolute;inset:0;margin:auto;max-width:100vw;max-height:100vh;aspect-ratio:16/9}
+  #ui{position:absolute;left:8px;bottom:6px;opacity:.7}
+</style></head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<div id="ui">space play/pause · ←/→ seek · h hide</div>
+<audio id="a" src="audio/octos.wav" preload="auto"></audio>
+<script type="module" src="src/main.js"></script>
+</body></html>

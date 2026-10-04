@@ -1,0 +1,51 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Octos promo — player</title>
+<style>
+  html,body{margin:0;background:#000;height:100%;overflow:hidden;color:#aaa;font:12px monospace}
+  canvas{position:absolute;inset:0;margin:auto;max-width:100vw;max-height:100vh;aspect-ratio:16/9}
+  #ui{position:absolute;left:8px;bottom:6px;opacity:.7}
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "/node_modules/three/build/three.module.js",
+  "three/addons/": "/node_modules/three/examples/jsm/",
+  "https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/+esm": "/node_modules/opentype.js/dist/opentype.module.js"
+} }
+</script>
+</head>
+<body>
+<canvas id="c" width="1920" height="1080"></canvas>
+<div id="ui"></div>
+<audio id="a" preload="auto"></audio>
+<script type="module">
+  import { Engine } from './engine.js';
+  const q = new URLSearchParams(location.search);
+  const dir = q.get('v');
+  const video = (await import(`/${dir}/video.js`)).default;
+  const engine = new Engine(document.getElementById('c'), video, `/${dir}/`);
+  window.__engine = engine;
+  await engine.ready;
+  window.__ready = true;
+  if (!q.has('offline')) {
+    const audio = document.getElementById('a'); audio.src = `/${dir}/${video.audio}`;
+    const ui = document.getElementById('ui');
+    let t = parseFloat(q.get('t') || '0'), playing = false, t0 = 0, wall = 0;
+    const now = () => (playing ? t0 + (performance.now() - wall) / 1000 : t);
+    const play = () => { playing = true; t0 = t; wall = performance.now(); audio.currentTime = t; audio.play(); };
+    const pause = () => { t = now(); playing = false; audio.pause(); };
+    addEventListener('keydown', (e) => {
+      if (e.key === ' ') { playing ? pause() : play(); e.preventDefault(); }
+      const d = { ArrowRight: 1, ArrowLeft: -1, '.': 1 / 60, ',': -1 / 60 }[e.key];
+      if (d) { const p = playing; if (p) pause(); t = Math.max(0, Math.min(video.dur, t + d * (e.shiftKey ? 5 : 1))); if (p) play(); }
+      if (e.key === 'h') ui.style.display = ui.style.display === 'none' ? '' : 'none';
+    });
+    (function loop() {
+      const tt = Math.min(now(), video.dur);
+      if (tt >= video.dur && playing) pause();
+      engine.renderFrame(tt);
+      ui.textContent = `${tt.toFixed(2)}s · ${engine.current?.name ?? ''} · space ←/→ ,/. h`;
+      requestAnimationFrame(loop);
+    })();
+  }
+</script>
+</body></html>
